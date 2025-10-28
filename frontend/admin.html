@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduFlow - Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      color: #000;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    section {
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #1e3a8a;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3b82f6;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background-color: #dc2626;
+    }
+    .delete-btn:hover {
+      background-color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <h1>EduFlow - Admin Dashboard</h1>
+  <div class="container">
+    <section>
+      <h2>Manage Users</h2>
+      <input type="text" id="userName" placeholder="Enter user name" />
+      <input type="text" id="userRole" placeholder="Enter role (student/teacher/admin)" />
+      <button onclick="addUser()">Add User</button>
+      <ul id="userList"></ul>
+    </section>
+
+    <section>
+      <h2>Manage Courses</h2>
+      <input type="text" id="courseTitle" placeholder="Enter course title" />
+      <input type="text" id="courseDesc" placeholder="Enter course description" />
+      <button onclick="addCourse()">Add Course</button>
+      <ul id="courseList"></ul>
+    </section>
+  </div>
+
+  <script>
+    // Static data for demo purposes
+    let users = [
+      { id: 1, name: "Alice", role: "student" },
+      { id: 2, name: "Bob", role: "teacher" }
+    ];
+
+    let courses = [
+      { id: 1, title: "Computer Basics and PC Software", description: "Intro to computers" },
+      { id: 2, title: "Business Communication", description: "Effective communication" }
+    ];
+
+    const userList = document.getElementById("userList");
+    const courseList = document.getElementById("courseList");
+
+    function loadUsers() {
+      userList.innerHTML = "";
+      users.forEach(user => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${user.name} (${user.role})
+          <button class="delete-btn" onclick="deleteUser(${user.id})">Delete</button>
+        `;
+        userList.appendChild(li);
+      });
+    }
+
+    function loadCourses() {
+      courseList.innerHTML = "";
+      courses.forEach(course => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          ${course.title}: ${course.description}
+          <button class="delete-btn" onclick="deleteCourse(${course.id})">Delete</button>
+        `;
+        courseList.appendChild(li);
+      });
+    }
+
+    function addUser() {
+      const name = document.getElementById("userName").value.trim();
+      const role = document.getElementById("userRole").value.trim().toLowerCase();
+      if (!name || !role || !["student", "teacher", "admin"].includes(role)) {
+        alert("Please enter a valid name and role (student/teacher/admin).");
+        return;
+      }
+      const newUser = { id: Date.now(), name, role };
+      users.push(newUser);
+      document.getElementById("userName").value = "";
+      document.getElementById("userRole").value = "";
+      loadUsers();
+    }
+
+    function deleteUser(id) {
+      users = users.filter(user => user.id !== id);
+      loadUsers();
+    }
+
+    function addCourse() {
+      const title = document.getElementById("courseTitle").value.trim();
+      const desc = document.getElementById("courseDesc").value.trim();
+      if (!title || !desc) {
+        alert("Please fill out both fields.");
+        return;
+      }
+      const newCourse = { id: Date.now(), title, description: desc };
+      courses.push(newCourse);
+      document.getElementById("courseTitle").value = "";
+      document.getElementById("courseDesc").value = "";
+      loadCourses();
+    }
+
+    function deleteCourse(id) {
+      courses = courses.filter(course => course.id !== id);
+      loadCourses();
+    }
+
+    window.onload = () => {
+      loadUsers();
+      loadCourses();
+    };
+  </script>
+</body>
+</html>
+
+

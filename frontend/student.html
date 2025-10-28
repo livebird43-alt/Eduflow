@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduFlow - Student Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      color: #000;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .course {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+    }
+    .course h3 {
+      margin: 0;
+      color: #1e3a8a;
+    }
+    .materials, .assignments {
+      margin-top: 10px;
+    }
+    .materials ul, .assignments ul {
+      list-style: none;
+      padding: 0;
+    }
+    .materials li, .assignments li {
+      padding: 5px 0;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3b82f6;
+    }
+    .submit-btn {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>EduFlow - Student Dashboard</h1>
+  <div class="container" id="courseContainer">
+    <!-- Courses will be loaded here -->
+  </div>
+
+  <script>
+    // Static course data as per your requirement
+    const courses = [
+      { id: 1, title: "Computer Basics and PC Software", description: "Introduction to computers and common software tools", materials: ["Intro PDF", "Software Guide"], assignments: [{ id: 1, title: "Basic Computer Quiz", due: "2025-09-25" }] },
+      { id: 2, title: "Business Communication", description: "Effective communication in a business environment", materials: ["Email Template", "Report Writing"], assignments: [{ id: 2, title: "Write a Business Email", due: "2025-09-28" }] },
+      { id: 3, title: "Discrete Mathematics", description: "Mathematical foundations for computing", materials: ["Set Theory Notes", "Graph Theory Guide"], assignments: [{ id: 3, title: "Solve Problems Set 1", due: "2025-10-01" }] },
+      { id: 4, title: "Computer Software Lab", description: "Hands-on practice with various software tools", materials: ["Lab Manual", "Software Installation Guide"], assignments: [{ id: 4, title: "Software Installation Report", due: "2025-10-05" }] }
+    ];
+
+    const container = document.getElementById("courseContainer");
+
+    function loadCourses() {
+      courses.forEach(course => {
+        const courseDiv = document.createElement("div");
+        courseDiv.classList.add("course");
+
+        courseDiv.innerHTML = `
+          <h3>${course.title}</h3>
+          <p>${course.description}</p>
+          <div class="materials">
+            <strong>Materials:</strong>
+            <ul>
+              ${course.materials.map(mat => `<li>${mat}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="assignments">
+            <strong>Assignments:</strong>
+            <ul>
+              ${course.assignments.map(assn => `
+                <li>
+                  ${assn.title} (Due: ${assn.due})
+                  <div class="submit-btn">
+                    <input type="text" placeholder="Submission link" id="link-${assn.id}" />
+                    <button onclick="submitAssignment(${assn.id})">Submit</button>
+                  </div>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+
+        container.appendChild(courseDiv);
+      });
+    }
+
+    function submitAssignment(assignmentId) {
+      const input = document.getElementById(`link-${assignmentId}`);
+      const link = input.value.trim();
+      if (!link) {
+        alert("Please enter submission link!");
+        return;
+      }
+      alert(`Assignment ${assignmentId} submitted with link:\n${link}`);
+      input.value = ""; // Clear input after submission
+    }
+
+    // Load courses on page load
+    window.onload = loadCourses;
+  </script>
+</body>
+</html>
+

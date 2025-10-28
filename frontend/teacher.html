@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduFlow - Teacher Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      color: #000;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .course {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      padding: 15px;
+    }
+    .course h3 {
+      margin: 0;
+      color: #1e3a8a;
+    }
+    .materials, .assignments {
+      margin-top: 10px;
+    }
+    .materials ul, .assignments ul {
+      list-style: none;
+      padding: 0;
+    }
+    .materials li, .assignments li {
+      padding: 5px 0;
+    }
+    button {
+      background-color: #1e3a8a;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3b82f6;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>EduFlow - Teacher Dashboard</h1>
+  <div class="container">
+    <h2>Create New Course</h2>
+    <input type="text" id="courseTitle" placeholder="Course Title" />
+    <input type="text" id="courseDesc" placeholder="Course Description" />
+    <button onclick="addCourse()">Add Course</button>
+
+    <h2>Your Courses</h2>
+    <div id="courseContainer">
+      <!-- Courses will be displayed here -->
+    </div>
+  </div>
+
+  <script>
+    // Static data for demo purposes
+    let courses = [
+      { id: 1, title: "Computer Basics and PC Software", description: "Intro to computers", materials: ["Intro PDF"], assignments: [{ id: 1, title: "Quiz 1", due: "2025-09-25", grades: [] }] },
+      { id: 2, title: "Business Communication", description: "Effective communication", materials: ["Report Writing Guide"], assignments: [{ id: 2, title: "Email Writing", due: "2025-09-28", grades: [] }] }
+    ];
+
+    const courseContainer = document.getElementById("courseContainer");
+
+    function loadCourses() {
+      courseContainer.innerHTML = "";
+      courses.forEach(course => {
+        const courseDiv = document.createElement("div");
+        courseDiv.classList.add("course");
+        courseDiv.innerHTML = `
+          <h3>${course.title}</h3>
+          <p>${course.description}</p>
+          <div class="materials">
+            <strong>Materials:</strong>
+            <ul>
+              ${course.materials.map(m => `<li>${m}</li>`).join('')}
+            </ul>
+            <input type="text" id="material-${course.id}" placeholder="New material title" />
+            <button onclick="addMaterial(${course.id})">Add Material</button>
+          </div>
+          <div class="assignments">
+            <strong>Assignments:</strong>
+            <ul>
+              ${course.assignments.map(a => `
+                <li>
+                  ${a.title} (Due: ${a.due})
+                  <div>
+                    <button onclick="gradeAssignment(${course.id}, ${a.id})">Grade Submissions</button>
+                  </div>
+                </li>
+              `).join('')}
+            </ul>
+            <input type="text" id="assign-title-${course.id}" placeholder="Assignment title" />
+            <input type="date" id="assign-due-${course.id}" />
+            <button onclick="addAssignment(${course.id})">Add Assignment</button>
+          </div>
+        `;
+        courseContainer.appendChild(courseDiv);
+      });
+    }
+
+    function addCourse() {
+      const title = document.getElementById("courseTitle").value.trim();
+      const desc = document.getElementById("courseDesc").value.trim();
+      if (!title || !desc) {
+        alert("Please fill out both fields.");
+        return;
+      }
+      const newCourse = {
+        id: Date.now(),
+        title,
+        description: desc,
+        materials: [],
+        assignments: []
+      };
+      courses.push(newCourse);
+      document.getElementById("courseTitle").value = "";
+      document.getElementById("courseDesc").value = "";
+      loadCourses();
+    }
+
+    function addMaterial(courseId) {
+      const input = document.getElementById(`material-${courseId}`);
+      const material = input.value.trim();
+      if (!material) {
+        alert("Please enter material title.");
+        return;
+      }
+      const course = courses.find(c => c.id === courseId);
+      course.materials.push(material);
+      input.value = "";
+      loadCourses();
+    }
+
+    function addAssignment(courseId) {
+      const titleInput = document.getElementById(`assign-title-${courseId}`);
+      const dueInput = document.getElementById(`assign-due-${courseId}`);
+      const title = titleInput.value.trim();
+      const due = dueInput.value.trim();
+      if (!title || !due) {
+        alert("Please enter assignment title and due date.");
+        return;
+      }
+      const course = courses.find(c => c.id === courseId);
+      const newAssignment = {
+        id: Date.now(),
+        title,
+        due,
+        grades: []
+      };
+      course.assignments.push(newAssignment);
+      titleInput.value = "";
+      dueInput.value = "";
+      loadCourses();
+    }
+
+    function gradeAssignment(courseId, assignId) {
+      const grade = prompt("Enter grade:");
+      if (!grade) return;
+      const course = courses.find(c => c.id === courseId);
+      const assignment = course.assignments.find(a => a.id === assignId);
+      assignment.grades.push(grade);
+      alert(`Graded assignment "${assignment.title}" with grade: ${grade}`);
+    }
+
+    window.onload = loadCourses;
+  </script>
+</body>
+</html>
